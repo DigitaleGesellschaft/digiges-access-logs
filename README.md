@@ -5,6 +5,8 @@
 
 # Commands
 
+Create a ./logs dir `mkdir logs` before you start.
+
 ## download apache access logs of today
 
 `scp digiges:/var/log/apache2/www.digitale-gesellschaft.ch ./logs && tar zcf ./logs/www.digitale-gesellschaft.ch.$( date "+%Y%m%d" ).tar.gz ./logs/www.digitale-gesellschaft.ch`
