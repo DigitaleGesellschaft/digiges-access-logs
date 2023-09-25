@@ -1,6 +1,6 @@
 # Tools
 
-* docker
+* docker (awstats)
 * goaccess
 
 # Commands
