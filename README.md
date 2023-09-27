@@ -2,6 +2,7 @@
 
 * docker (awstats)
 * goaccess
+* matomo
 
 # Commands
 
