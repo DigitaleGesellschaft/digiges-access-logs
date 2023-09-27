@@ -1,0 +1,33 @@
+version: "3"
+
+# docker run --rm --volumes-from="digiges-access-log-app-1" --link digiges-access-log-app-1 --network digiges-access-log_default python:3.6-alpine python /var/www/html/misc/log-analytics/import_logs.py --url=http://app:80 --login=admin --password=123456 --idsite=1 --recorders=4 /var/www/html/logs/*.tar.gz
+services:
+  db:
+    image: mariadb:10.11
+    command: --max-allowed-packet=64MB
+    restart: always
+    volumes:
+      - db:/var/lib/mysql:Z
+    environment:
+      - MYSQL_ROOT_PASSWORD=
+      - MARIADB_AUTO_UPGRADE=1
+      - MARIADB_DISABLE_UPGRADE_BACKUP=1
+    env_file:
+      - ./db.env
+  app:
+    image: matomo:4.15-apache
+    restart: always
+    volumes:
+      - ./config:/var/www/html/config:z
+      - ./logs:/var/www/html/logs:z
+      - matomo:/var/www/html:z
+    environment:
+      - MATOMO_DATABASE_HOST=db
+    env_file:
+      - ./db.env
+    ports:
+      - 8081:80
+
+volumes:
+  db:
+  matomo:

@@ -1,2 +1,5 @@
 logs/
 report.html
+
+matomo/logs
+matomo/config
