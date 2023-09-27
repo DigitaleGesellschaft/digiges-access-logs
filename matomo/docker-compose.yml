@@ -1,6 +1,5 @@
 version: "3"
 
-# docker run --rm --volumes-from="digiges-access-log-app-1" --link digiges-access-log-app-1 --network digiges-access-log_default python:3.6-alpine python /var/www/html/misc/log-analytics/import_logs.py --url=http://app:80 --login=admin --password=123456 --idsite=1 --recorders=4 /var/www/html/logs/*.tar.gz
 services:
   db:
     image: mariadb:10.11
