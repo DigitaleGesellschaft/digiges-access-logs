@@ -1,3 +1,5 @@
+Instructions on how to analyze apache2 access logs with different open source tools.
+
 # Tools
 
 * docker (awstats)

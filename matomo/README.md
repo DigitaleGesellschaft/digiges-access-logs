@@ -1,4 +1,4 @@
-# Setup
+# Setup matomo using docker
 Adjust db.env if this is a production like setup!
 
 `docker compose up`
@@ -23,9 +23,9 @@ Trigger log processing, to see them immediately in the web UI:
 
 
 # Delete all reports and logs from matomo
-Copy contents of ./prune.sql and execute it in the SQL prompt. Open prompt via:
+Run prune.sql in matomo database container:
 
-`docker exec -it matomo-db-1 /bin/mysql -uroot -p1234 matomo`
+`docker exec -i matomo-db-1 /bin/mysql -uroot -p1234 matomo < ./prune.sql`
 
 This maybe handy, because the importer re-imports existing logs :/!
 
