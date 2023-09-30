@@ -10,11 +10,16 @@ Adjust db.env if this is a production like setup!
 1. As root use modify ./config/config.ini.php and set http://localhost:8081 as trusted_host
 
 # Import access logs
-Place log files (e.g. *.tar.gz) archives in ./logs folder (requires root). Then run (replace password):
+Place log files (e.g. *.tar.gz archives) in ./logs folder (requires root). Then run (replace password):
 
 `docker run --rm --volumes-from="matomo-app-1" --link matomo-app-1 \
     --network matomo_default python:3.6-alpine python /var/www/html/misc/log-analytics/import_logs.py \
     --url=http://app:80 --login=admin --password=123456 --idsite=1 --recorders=4 /var/www/html/logs/*.tar.gz`
+
+
+Trigger log processing, to see them immediately in the web UI:
+
+`docker exec -it matomo-app-1 ./console core:archive --force-all-websites --url='http://app:80'`
 
 
 # Delete all reports and logs from matomo
