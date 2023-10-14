@@ -35,3 +35,10 @@ in this example all GET request to digitalerechte/ or digitalerechte are extract
 the output file can be used to create a goaccess report, that only contains non-crawler visitors
 
 `goaccess ./logs/digitalerechte.log -o report.html --log-format=COMBINED --ignore-crawlers -c`
+
+## remove crawlers / spiders / bots from logs
+goaccess and matomo both have built in support to remove crawlers. However, a more flexible (and hopefully more complete) way to remove crawlers offers https://github.com/omrilotan/isbot:
+
+`zcat ./logs/www.digitale-gesellschaft.ch.*.tar.gz | deno run --reload exclude-bots.ts`
+
+Remove the reload flag to not always download the latest list of crawlers before log processing.
