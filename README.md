@@ -32,6 +32,9 @@ in this example all GET request to digitalerechte/ or digitalerechte are extract
 
 `zcat ./logs/www.digitale-gesellschaft.ch.*.tar.gz | grep --text GET | grep --text -E 'digitalerechte( |/ )H' > ./logs/digitalerechte.log`
 
+the next example extracts all requests originating from a social media campaign that used query parameter markers.
+`zcat ./logs/www.digitale-gesellschaft.ch.*.tar.gz | grep --text GET | grep --text -E 'digitalerechte/?\?s=(t|i|m|x|l) H' > ./logs/digitalerechte-source_query.log`
+
 the output file can be used to create a goaccess report, that only contains non-crawler visitors
 
 `goaccess ./logs/digitalerechte.log -o report.html --log-format=COMBINED --ignore-crawlers -c`
