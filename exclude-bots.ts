@@ -1,4 +1,4 @@
-import isBot from 'https://cdn.jsdelivr.net/npm/isbot@latest/index.mjs';
+import {isbot} from 'https://cdn.jsdelivr.net/npm/isbot@latest/index.mjs';
 
 
 // Does not work with masked IPs (e.g. anonip)
@@ -22,7 +22,7 @@ for await (const chunk of Deno.stdin.readable) {
     const [ip, , , , , , , , , , , ...userAgentParts] = line.split(' ');
     const userAgent = userAgentParts.join(' ');
     // @ts-ignore
-    lineIsOk = !isBot(userAgent)
+    lineIsOk = !isbot(userAgent)
 
     // lineIsOk = !badIPs.includes(ip))
     
