@@ -48,6 +48,6 @@ goaccess and matomo both have built in support to remove crawlers. However, a mo
 Remove the reload flag to not always download the latest list of crawlers before log processing.
 
 ## remove irrelevant URIs from logs
-Static resources such as js files and theme images are part of the wordpress theme or other plugins. preview_id is the query parameter used by wordpress when previewing a post.
+Static resources such as js files and theme images are part of the wordpress theme or other plugins. These are sometimes not correctly identified as static resources, but as pages. Simply excluding those URIs might help, depending on the report use case. 'preview_id' is the query parameter used by wordpress when previewing a post.
 
-`zcat ./logs/www.digitale-gesellschaft.ch-*.tar.gz | grep --text --invert-match -E '/wp-content/(themes|plugins)/' | grep --text --invert-match -E 'preview_id'`
+`zcat ./logs/www.digitale-gesellschaft.ch-*.tar.gz | grep --text --invert-match -E '\.(txt|js|php|css|png|gif|jpeg|jpg|webp|svg|env|asp|woff|woff2)' | grep --text --invert-match -E 'preview_id'`
