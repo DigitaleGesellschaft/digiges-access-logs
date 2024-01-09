@@ -1,5 +1,5 @@
 logs/
 report.html
-
+*.out
 matomo/logs
 matomo/config
