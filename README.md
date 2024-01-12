@@ -31,7 +31,7 @@ Due to connection rate limiting, simple for loop style with SCP does not work fo
 src=digiges:access.log/
 dst=./logs
 
-since_ts=$( date -d '-7 days' +%s ) # or e.g.  date -d '20240129'
+since_ts=$( date -d '20231201' +%s ) # or e.g.  date -d '20240129'
 rsync --archive --dry-run --no-motd --out-format='%f' "$src" "$dst" | \
     while IFS= read -r fname; do
         archive_date=$( echo "$fname" | grep -oE '[0-9]+' ) || continue
@@ -69,7 +69,6 @@ The output file can be used to create a goaccess report, that only contains non-
 
 `goaccess ./logs/geheimjustiz.log -p ./goaccess.conf`
 
-
 ## Remove crawlers / spiders / bots from logs
 
 goaccess and matomo both have built in support to remove crawlers. However, a more flexible (and hopefully more complete) way to remove crawlers offers https://github.com/omrilotan/isbot:
@@ -87,15 +86,14 @@ Static resources such as js files and theme images are part of the wordpress the
 # Presets
 
 ## Page
+Generate a goaccess report of a particular page, identified via slug.
+
+page_slug value must contain the end of the page URI without the trailing slash (/).
 
 ```bash {"id":"01HKTBECEEP0TVNNEXGMK72A14"}
-page_slug="geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst"
-report_name="geheimjustiz"
+bash ./gen-report-page_slug.sh "koennsch-fuer-digitale-grundrechte" "könnsch"
 
-zcat ./logs/www.digitale-gesellschaft.ch-*.tar.gz | grep --text GET | grep --text -E "$page_slug( |/ )H" > ./logs/$report_name.log
-cat ./logs/$report_name.log | grep --text --invert-match -E '\.(txt|js|php|css|png|gif|jpeg|jpg|webp|svg|env|asp|woff|woff2)' | grep --text --invert-match -E 'preview_id' > ./logs/$report_name-nostatic.log
-cat ./logs/$report_name-nostatic.log | deno run --reload exclude-bots.ts > ./logs/$report_name-nostaticandbot.log
-# remove -o option to render report in terminal
-goaccess ./logs/geheimjustiz-nostaticandbot.log -p ./goaccess.conf -o report-$report_name.html
-open ./report-$report_name.html
+bash ./gen-report-page_slug.sh "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "geheimjustiz"
 ```
+
+## 
