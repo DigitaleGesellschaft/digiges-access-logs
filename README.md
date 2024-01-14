@@ -86,14 +86,15 @@ Static resources such as js files and theme images are part of the wordpress the
 # Presets
 
 ## Page
+
 Generate a goaccess report of a particular page, identified via slug.
 
 page_slug value must contain the end of the page URI without the trailing slash (/).
 
 ```bash {"id":"01HKTBECEEP0TVNNEXGMK72A14"}
-bash ./gen-report-page_slug.sh "koennsch-fuer-digitale-grundrechte" "könnsch"
+bash ./report-page_slug.sh "koennsch-fuer-digitale-grundrechte" "könnsch"
 
-bash ./gen-report-page_slug.sh "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "geheimjustiz"
+bash ./report-page_slug.sh "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "geheimjustiz"
 ```
 
 ## 
