@@ -14,6 +14,8 @@ Instructions on how to analyze apache2 access logs with different open source to
 
 # Commands
 
+Note: All ssh, rsync, scp commands use a configured ssh Host named 'digiges'.
+
 Create a ./logs dir `mkdir logs` before you start.
 
 ## Download Apache access logs of yesterday
@@ -25,20 +27,8 @@ The date in the archive name relates to the create date of the archive, which is
 
 For example the last 8 days, starting today (containing the logs of yesterday ;)).
 
-Due to connection rate limiting, simple for loop style with SCP does not work for more than 3 files. Thus, rsync.
-
 ```bash {"id":"01HKTBECEEP0TVNNEXGHAHD20R"}
-src=digiges:access.log/
-dst=./logs
-
-since_ts=$( date -d '20231201' +%s ) # or e.g.  date -d '20240129'
-rsync --archive --dry-run --no-motd --out-format='%f' "$src" "$dst" | \
-    while IFS= read -r fname; do
-        archive_date=$( echo "$fname" | grep -oE '[0-9]+' ) || continue
-        archive_ts=$( date -d "$archive_date" +%s ) || continue
-        if [ $archive_ts -ge $since_ts ]; then printf '%s\0' "$fname"; fi
-    done | \
-    rsync --archive --progress --files-from=- -0 "$src" "$dst"
+bash ./fetch-logs.sh "20231201" # or "now -8days"
 ```
 
 ## Import logs to awstats
@@ -89,12 +79,18 @@ Static resources such as js files and theme images are part of the wordpress the
 
 Generate a goaccess report of a particular page, identified via slug.
 
+Syntax: `report-page_slug.sh :report_name :page_slug [:min_date]`
+
 page_slug value must contain the end of the page URI without the trailing slash (/).
 
-```bash {"id":"01HKTBECEEP0TVNNEXGMK72A14"}
-bash ./report-page_slug.sh "koennsch-fuer-digitale-grundrechte" "könnsch"
+min_date is of format YYYYmmdd (e.g. '20230125') or 'now -7days'.
 
-bash ./report-page_slug.sh "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "geheimjustiz"
+Beware that logs must have been already fetched before.
+
+```bash {"id":"01HKTBECEEP0TVNNEXGMK72A14"}
+bash ./report-page_slug.sh "könnsch" "koennsch-fuer-digitale-grundrechte" "20231214"
+
+bash ./report-page_slug.sh "geheimjustiz" "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "20240107"
 ```
 
 ## 
