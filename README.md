@@ -1,7 +1,7 @@
 ---
 runme:
   id: 01HKTA1PWQ3C4AJDY3N8ABKZ6V
-  version: v2.2
+  version: v3
 ---
 
 Instructions on how to analyze apache2 access logs with different open source tools.
@@ -28,7 +28,7 @@ The date in the archive name relates to the create date of the archive, which is
 For example the last 8 days, starting today (containing the logs of yesterday ;)).
 
 ```bash {"id":"01HKTBECEEP0TVNNEXGHAHD20R"}
-bash ./fetch-logs.sh "20231201" # or "now -8days"
+bash ./fetch-logs.sh "20231201" "20231231" # or "now -8days"
 ```
 
 ## Import logs to awstats
@@ -79,7 +79,7 @@ Static resources such as js files and theme images are part of the wordpress the
 
 Generate a goaccess report of a particular page, identified via slug.
 
-Syntax: `report-page_slug.sh :report_name :page_slug [:min_date]`
+Syntax: `report-page_slug.sh :report_name :page_slug [:min_date] [:max_date]`
 
 page_slug value must contain the end of the page URI without the trailing slash (/).
 
@@ -88,9 +88,9 @@ min_date is of format YYYYmmdd (e.g. '20230125') or 'now -7days'.
 Beware that logs must have been already fetched before.
 
 ```bash {"id":"01HKTBECEEP0TVNNEXGMK72A14"}
-bash ./report-page_slug.sh "könnsch" "koennsch-fuer-digitale-grundrechte" "20231214"
+bash ./report-page_slug.sh "könnsch" "koennsch-fuer-digitale-grundrechte" "20231214" "20231231"
 
-bash ./report-page_slug.sh "geheimjustiz" "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "20240107"
+bash ./report-page_slug.sh "geheimjustiz" "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "20240107" "20240207"
 ```
 
 ## 

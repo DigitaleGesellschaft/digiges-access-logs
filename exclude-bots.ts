@@ -1,5 +1,5 @@
-import {isbot} from 'https://cdn.jsdelivr.net/npm/isbot@latest/index.mjs';
-
+import { isbot } from "https://cdn.jsdelivr.net/npm/isbot@latest/index.mjs";
+import { TextLineStream } from "https://deno.land/std@0.221.0/streams/mod.ts";
 
 // Does not work with masked IPs (e.g. anonip)
 // const badIPsRespone = await fetch(
@@ -10,24 +10,20 @@ import {isbot} from 'https://cdn.jsdelivr.net/npm/isbot@latest/index.mjs';
 // }
 // const badIPs = (await badIPsRespone.text()).split("\n");
 
+const lines = Deno.stdin.readable
+  .pipeThrough(new TextDecoderStream())
+  .pipeThrough(new TextLineStream());
 
-const decoder = new TextDecoder();
-for await (const chunk of Deno.stdin.readable) {
-  const text = decoder.decode(chunk);
-  const lines = text.split("\n");
-  for (const line of lines) {
-    let lineIsOk = true;
+for await (const line of lines) {
+  
+  // Works with Apache2 'Combined' log format
+  const [ip, , , , , , , , , , , ...userAgentParts] = line.split(" ");
+  const userAgent = userAgentParts.join(" ");
 
-    // Works with Apache2 'Combined' log format
-    const [ip, , , , , , , , , , , ...userAgentParts] = line.split(' ');
-    const userAgent = userAgentParts.join(' ');
-    // @ts-ignore
-    lineIsOk = !isbot(userAgent)
+  const lineIsOk = !isbot(userAgent);
+  // lineIsOk = !badIPs.includes(ip))
 
-    // lineIsOk = !badIPs.includes(ip))
-    
-    if(lineIsOk){
-      console.log(line);
-    }
+  if (lineIsOk) {
+    console.log(line);
   }
 }

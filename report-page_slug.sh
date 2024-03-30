@@ -6,15 +6,17 @@ report_name="$1"
 page_slug="$2"
  # date -d '20240129' or date -d 'now -7days'
 min="${3:-now -7days}"
+max="${4:-now}"
 min_ts=$( date -d "$min" +%s )
+max_ts=$( date -d "$max" +%s )
 
-# bash ./fetch-logs.sh "$min"
+# bash ./fetch-logs.sh "$min" "$max"
 
 find ./logs -name '*-*.tar.gz' |  \
     while IFS= read -r fname; do
         archive_date=$( echo "$fname" | grep -oE '[0-9]+' ) || continue
         archive_ts=$( date -d "$archive_date" +%s ) || continue
-        if [ $archive_ts -ge $min_ts ]; then printf '%s\0' "$fname"; fi
+        if [ $archive_ts -ge $min_ts -a $archive_ts -lt $max_ts ]; then printf '%s\0' "$fname"; fi
     done | \
     xargs -0 -n1 zcat | grep --text GET | grep --text -E "$page_slug( |/ )HTTP" > ./logs/$report_name.log
 
