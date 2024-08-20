@@ -11,6 +11,7 @@ Instructions on how to analyze apache2 access logs with different open source to
 * docker (awstats)
 * goaccess (>1.8)
 * matomo
+* duckdb
 
 # Commands
 
@@ -57,7 +58,7 @@ The next example extracts all requests originating from a social media campaign 
 
 The output file can be used to create a goaccess report, that only contains non-crawler visitors.
 
-`goaccess ./logs/geheimjustiz.log -p ./goaccess.conf`
+`goaccess ./logs/digitalerechte-source_query.log -p ./goaccess.conf`
 
 ## Remove crawlers / spiders / bots from logs
 
@@ -81,9 +82,9 @@ Generate a goaccess report of a particular page, identified via slug.
 
 Syntax: `report-page_slug.sh :report_name :page_slug [:min_date] [:max_date]`
 
-page_slug value must contain the end of the page URI without the trailing slash (/).
+page_slug value must contain the end of the page URI without the trailing slash (/). Use '' (empty slug name) to create a report covering all paths.
 
-min_date is of format YYYYmmdd (e.g. '20230125') or 'now -7days'.
+min_date and max_date is of format YYYYmmdd (e.g. '20230125') or 'now -7days'.
 
 Beware that logs must have been already fetched before.
 
@@ -93,4 +94,11 @@ bash ./report-page_slug.sh "könnsch" "koennsch-fuer-digitale-grundrechte" "2023
 bash ./report-page_slug.sh "geheimjustiz" "geheimjustiz-am-bundesverwaltungsgericht-kabelaufklaerung-durch-geheimdienst" "20240107" "20240207"
 ```
 
-## 
+# Hits per Weekday
+Use duckdb to plot a histogram, which shows the number of hits per day (including weekday).
+
+Replace log file name in following statement before run:
+
+```bash
+duckdb -s "DROP TABLE IF EXISTS acclogs; CREATE TABLE acclogs AS SELECT * FROM read_csv_auto('logs/grundrechte-wahren-nostatic-normalized-nobot.log', delim=' ', header=false, names = ['clientIp', 'userId', 'nA', 'datetime', 'tzOffset', 'methodAndPath', 'responseStatus', 'bytes', 'referrer', 'userAgent'], types={'datetime':'DATE'}, dateformat='[%d/%b/%Y:%H:%M:%S'); COPY (SELECT datetrunc('day', datetime) || '-' || dayofweek(datetime) AS 'week-dayofweek', count(*) AS hits FROM acclogs GROUP BY 1 ORDER BY 1 ASC) TO '/dev/stdout' WITH (FORMAT 'csv', HEADER)" | uplot bar -d, -H
+```
