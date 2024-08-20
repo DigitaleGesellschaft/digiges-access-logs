@@ -14,6 +14,6 @@ rsync --archive --dry-run --no-motd --out-format='%f' "$src" "$dst" | \
     while IFS= read -r fname; do
         archive_date=$( echo "$fname" | grep -oE '[0-9]+' ) || continue
         archive_ts=$( date -d "$archive_date" +%s ) || continue
-        if [ $archive_ts -ge $min_ts -a $archive_ts -lt $max_ts ]; then printf '%s\0' "$fname"; fi
+        if [ $archive_ts -ge $min_ts -a $archive_ts -le $max_ts ]; then printf '%s\0' "$fname"; fi
     done | \
     rsync --archive --progress --files-from=- -0 "$src" "$dst"

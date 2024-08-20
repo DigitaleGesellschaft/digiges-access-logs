@@ -16,7 +16,7 @@ find ./logs -name '*-*.tar.gz' |  \
     while IFS= read -r fname; do
         archive_date=$( echo "$fname" | grep -oE '[0-9]+' ) || continue
         archive_ts=$( date -d "$archive_date" +%s ) || continue
-        if [ $archive_ts -ge $min_ts -a $archive_ts -lt $max_ts ]; then printf '%s\0' "$fname"; fi
+        if [ $archive_ts -ge $min_ts -a $archive_ts -le $max_ts ]; then printf '%s\0' "$fname"; fi
     done | \
     xargs -0 -n1 zcat | grep --text GET | grep --text -E "$page_slug( |/ )HTTP" > ./logs/$report_name.log
 
