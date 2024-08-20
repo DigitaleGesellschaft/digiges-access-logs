@@ -18,7 +18,7 @@ find ./logs -name '*-*.tar.gz' |  \
         archive_ts=$( date -d "$archive_date" +%s ) || continue
         if [ $archive_ts -ge $min_ts -a $archive_ts -le $max_ts ]; then printf '%s\0' "$fname"; fi
     done | \
-    xargs -0 -n1 zcat | grep --text GET | grep --text -E "$page_slug( |/ )HTTP" > ./logs/$report_name.log
+    xargs -0 -n1 zcat | grep --text GET | grep --text -E "$page_slug( |/ |/?\?s=[timxl]{1} )HTTP" > ./logs/$report_name.log
 
 cat ./logs/$report_name.log \
     | grep --text --invert-match -E '\.(txt|js|php|css|png|gif|jpeg|jpg|webp|svg|env|asp|woff|woff2)' \
