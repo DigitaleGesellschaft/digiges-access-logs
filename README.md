@@ -95,9 +95,15 @@ bash ./report-page_slug.sh "geheimjustiz" "geheimjustiz-am-bundesverwaltungsgeri
 ```
 
 # Hits per Weekday
-Use duckdb to plot a histogram, which shows the number of hits per day (including weekday).
+Use duckdb to plot a histogram, which shows the number of total hits and hits by social media platform per day (including weekday).
 
 Replace log file name in following statement before run:
+
+```bash
+duckdb -box -s "DROP TABLE IF EXISTS acclogs; CREATE TABLE acclogs AS SELECT * FROM read_csv_auto('logs/grundrechte-wahren-nostatic-normalized-nobot.log', delim=' ', header=false, names = ['clientIp', 'userId', 'nA', 'datetime', 'tzOffset', 'methodAndPath', 'responseStatus', 'bytes', 'referrer', 'userAgent'], types={'datetime':'DATE'}, dateformat='[%d/%b/%Y:%H:%M:%S'); SELECT datetrunc('day', datetime) || '-' || dayofweek(datetime) AS 'week-dayofweek', count(*) FILTER (WHERE methodAndPath ILIKE '%s=x H%') AS hitsX, count(*) FILTER (WHERE methodAndPath ILIKE '%s=i H%') AS hitsInstagram, count(*) FILTER (WHERE methodAndPath ILIKE '%s=m H%') AS hitsMastodon, count(*) FILTER (WHERE methodAndPath ILIKE '%s=l H%') AS hitsLinkedIn, count(*) AS hitsTotal FROM acclogs GROUP BY 1 ORDER BY 1 ASC;"
+```
+
+Just total hits per day, but in a nice bar chart in the terminal (requires YouPlot):
 
 ```bash
 duckdb -s "DROP TABLE IF EXISTS acclogs; CREATE TABLE acclogs AS SELECT * FROM read_csv_auto('logs/grundrechte-wahren-nostatic-normalized-nobot.log', delim=' ', header=false, names = ['clientIp', 'userId', 'nA', 'datetime', 'tzOffset', 'methodAndPath', 'responseStatus', 'bytes', 'referrer', 'userAgent'], types={'datetime':'DATE'}, dateformat='[%d/%b/%Y:%H:%M:%S'); COPY (SELECT datetrunc('day', datetime) || '-' || dayofweek(datetime) AS 'week-dayofweek', count(*) AS hits FROM acclogs GROUP BY 1 ORDER BY 1 ASC) TO '/dev/stdout' WITH (FORMAT 'csv', HEADER)" | uplot bar -d, -H
