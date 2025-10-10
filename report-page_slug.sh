@@ -18,12 +18,12 @@ find ./logs -name '*-*.tar.gz' |  \
         archive_ts=$( date -d "$archive_date" +%s ) || continue
         if [ $archive_ts -ge $min_ts -a $archive_ts -le $max_ts ]; then printf '%s\0' "$fname"; fi
     done | \
-    xargs -0 -n1 zcat | grep --text GET | grep --text -E "$page_slug( |/ |/?\?s=[timxl]{1} )HTTP" > ./logs/$report_name.log
+    xargs -0 -n1 zcat | grep --text GET | grep --text -E "$page_slug( |/ |/?\?s=[milb]{1} )HTTP" > ./logs/$report_name.log
 
 cat ./logs/$report_name.log \
     | grep --text --invert-match -E '\.(txt|js|php|css|png|gif|jpeg|jpg|webp|svg|env|asp|woff|woff2)' \
     | grep --text --invert-match -E 'preview_id' > ./logs/$report_name-nostatic.log
-cat ./logs/$report_name-nostatic.log | sed 's|/ HTTP| HTTP|' > ./logs/$report_name-nostatic-normalized.log
+cat ./logs/$report_name-nostatic.log | sed 's|/ HTTP| HTTP|' | sed "s|$page_slug/?s=|$page_slug?s=|" > ./logs/$report_name-nostatic-normalized.log
 cat ./logs/$report_name-nostatic-normalized.log | deno run --reload exclude-bots.ts > ./logs/$report_name-nostatic-normalized-nobot.log
 # remove -o option to render report in terminal
 goaccess ./logs/$report_name-nostatic-normalized-nobot.log -p ./goaccess.conf --html-report-title "$report_name" -o report-$report_name.html
