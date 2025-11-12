@@ -1,9 +1,3 @@
----
-runme:
-  id: 01HKTA1PWQ3C4AJDY3N8ABKZ6V
-  version: v3
----
-
 Instructions on how to analyze apache2 access logs with different open source tools.
 
 # Tools
