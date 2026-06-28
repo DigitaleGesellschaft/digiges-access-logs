@@ -18,7 +18,7 @@ for await (const line of lines) {
   
   // Works with Apache2 'Combined' log format
   const [ip, , , , , , , , , , , ...userAgentParts] = line.split(" ");
-  const userAgent = userAgentParts.join(" ");
+  const userAgent = userAgentParts.join(" ").replace(/"/g, "");
 
   const lineIsOk = !isbot(userAgent);
   // lineIsOk = !badIPs.includes(ip))
