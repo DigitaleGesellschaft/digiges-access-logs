@@ -1,0 +1,46 @@
+name: Monthly Log Aggregation
+
+on:
+  schedule:
+    # Run on the 2nd day of every month at midnight
+    - cron: "0 0 2 * *"
+
+jobs:
+  aggregate-logs:
+    name: Aggregate Logs for Previous Month
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install linux packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gzip rsync
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Calculate previous month
+        id: prev-month
+        run: |
+          # Get the previous month in YYYYMM format
+          PREV_MONTH=$(date -d "$(date +'%Y-%m-01') -1 day" +'%Y%m')
+          echo "PREV_MONTH=${PREV_MONTH}" >> $GITHUB_ENV
+
+      - name: Run month-agg-log.sh
+        run: |
+          bash ./month-agg-log.sh "$PREV_MONTH"
+
+      - name: Compress aggregated log file
+        run: |
+          tar -czf ./logs/access-${PREV_MONTH}.tar.gz -C ./logs access-${PREV_MONTH}.log
+
+      - name: Upload compressed log file
+        uses: actions/upload-artifact@v3
+        with:
+          name: access-${{ env.PREV_MONTH }}.log
+          path: ./logs/access-${{ env.PREV_MONTH }}.tar.gz
