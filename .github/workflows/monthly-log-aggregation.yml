@@ -4,6 +4,7 @@ on:
   schedule:
     # Run on the 2nd day of every month at midnight
     - cron: "0 0 2 * *"
+  workflow_dispatch:
 
 jobs:
   aggregate-logs:
